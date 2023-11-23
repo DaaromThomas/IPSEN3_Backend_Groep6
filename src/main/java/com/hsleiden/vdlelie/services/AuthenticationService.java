@@ -1,0 +1,58 @@
+package com.hsleiden.vdlelie.services;
+import com.hsleiden.vdlelie.dao.AccountRepository;
+import com.hsleiden.vdlelie.dto.JwtAuthenticationResponse;
+import com.hsleiden.vdlelie.dto.ResetPassRequest;
+import com.hsleiden.vdlelie.dto.SignInRequest;
+import com.hsleiden.vdlelie.dto.SignUpRequest;
+import com.hsleiden.vdlelie.model.Account;
+import com.hsleiden.vdlelie.model.Role;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.beans.Encoder;
+
+@Service
+@RequiredArgsConstructor
+public class AuthenticationService {
+    private final AccountRepository accountRepository;
+    private final AccountServiceImpl accountService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final LocationServiceImpl locationService;
+
+    public JwtAuthenticationResponse signup(SignUpRequest request) {
+
+        if (accountRepository.findByName(request.getUsername()).isPresent()){ return null; }
+        var user = Account
+                .builder()
+                .employeenumber(request.getEmployeenumber())
+                .name(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .location(locationService.findById(request.getLocationID()).get())
+                .role(Role.ROLE_USER)
+                .build();
+
+        user = accountService.save(user);
+        var jwt = jwtService.generateToken(user);
+        return JwtAuthenticationResponse.builder().token(jwt).build();
+    }
+
+    public void resetPassword(ResetPassRequest request){
+        var user = accountRepository.findByName(request.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid username."));
+        user.setPassword(passwordEncoder.encode(request.getNewpassword()));
+        accountRepository.save(user);
+    }
+
+
+    public JwtAuthenticationResponse signin(SignInRequest request) {
+        var user = accountRepository.findByName(request.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid username."));
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) { return null; }
+        var jwt = jwtService.generateToken(user);
+        return JwtAuthenticationResponse.builder().token(jwt).build();
+    }
+
+}
