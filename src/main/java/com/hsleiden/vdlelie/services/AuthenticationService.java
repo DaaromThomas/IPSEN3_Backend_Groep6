@@ -52,10 +52,10 @@ public class AuthenticationService {
     public JwtAuthenticationResponse signin(SignInRequest request) {
         var userFromRepo = accountRepository.findByName(request.getUsername());
         if(userFromRepo.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         Account user = userFromRepo.get();
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) { throw new ResponseStatusException(HttpStatus.FORBIDDEN); }
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED); }
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
