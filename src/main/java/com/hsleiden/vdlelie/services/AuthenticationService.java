@@ -7,9 +7,11 @@ import com.hsleiden.vdlelie.dto.SignUpRequest;
 import com.hsleiden.vdlelie.model.Account;
 import com.hsleiden.vdlelie.model.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.beans.Encoder;
 
@@ -48,9 +50,12 @@ public class AuthenticationService {
 
 
     public JwtAuthenticationResponse signin(SignInRequest request) {
-        var user = accountRepository.findByName(request.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid username."));
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) { return null; }
+        var userFromRepo = accountRepository.findByName(request.getUsername());
+        if(userFromRepo.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        Account user = userFromRepo.get();
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) { throw new ResponseStatusException(HttpStatus.FORBIDDEN); }
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
