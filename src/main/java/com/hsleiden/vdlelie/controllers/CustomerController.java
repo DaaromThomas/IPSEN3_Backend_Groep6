@@ -30,11 +30,13 @@ public class CustomerController
 
     @PostMapping("/customers")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public Customer saveCustomer(@RequestParam int customerNumber, @RequestParam String name, @RequestParam String address, @RequestParam String phonenumber, @RequestParam String email, @RequestParam(required = false) String preferredPackageId){
+    public Customer saveCustomer(@RequestParam int customerNumber, @RequestParam String name, @RequestParam String address, @RequestParam(required = false) String phonenumber, @RequestParam(required = false) String email, @RequestParam(required = false) String preferredPackageId){
         Packaging preferredPackage = null;
-        if (!preferredPackageId.isBlank()){
-            if (packagingService.findById(preferredPackageId).isPresent()){
-                preferredPackage = packagingService.findById(preferredPackageId).get();
+        if (preferredPackageId != null) {
+            if (!preferredPackageId.isBlank()){
+                if (packagingService.findById(preferredPackageId).isPresent()){
+                    preferredPackage = packagingService.findById(preferredPackageId).get();
+                }
             }
         }
         Customer customer = new Customer(customerNumber, name, address, phonenumber, email, preferredPackage);
