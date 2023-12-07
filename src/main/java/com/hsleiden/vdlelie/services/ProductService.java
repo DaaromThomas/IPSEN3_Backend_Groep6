@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface ProductService
 {
     Optional<Product> findById(String id);
+    Optional<Product> findByProductNumber(int productnumber);
     Product save(Product product);
     List<Product> findAll();
     void delete(Product product);
