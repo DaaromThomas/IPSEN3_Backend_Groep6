@@ -15,4 +15,5 @@ public interface ProductService
     Product save(Product product);
     List<Product> findAll();
     void delete(Product product);
+    int setIsPackedForProduct(boolean isPacked, int productNumber);
 }

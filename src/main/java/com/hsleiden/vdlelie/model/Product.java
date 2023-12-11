@@ -1,6 +1,7 @@
 package com.hsleiden.vdlelie.model;
 
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,6 +20,7 @@ public class Product
     private String name;
     private int productnumber;
     private ProductType producttype;
+    @Column(name = "ispacked")
     private boolean isPacked;
 
     public Product(Packaging prefferedPackage, Order order, String name, int productnumber, ProductType productType) {
