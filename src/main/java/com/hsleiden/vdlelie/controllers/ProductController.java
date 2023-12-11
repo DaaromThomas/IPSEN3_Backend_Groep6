@@ -55,10 +55,6 @@ public class ProductController
     @GetMapping("/products/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public Product getProductById(@PathVariable String id){
-        System.out.println("get by id");
-        if(productService.findByProductNumber(1234).isPresent()){
-            System.out.println(productService.findByProductNumber(1234).get().getName());
-        }
         if (productService.findById(id).isPresent()){
             return productService.findById(id).get();
         }
@@ -67,15 +63,11 @@ public class ProductController
         }
     }
 
-    @GetMapping("/products/productnumber")
-    @PreAuthorize("hasAnyRole('USER', 'Admin')")
-    public Product getProductsByProductNumber(@RequestParam String productnumber){
-        System.out.println("get product");
-        int prn = Integer.valueOf(productnumber);
-        if(productService.findByProductNumber(prn).isPresent()){
-            System.out.println(productnumber);
-            System.out.println(productService.findByProductNumber(prn).get());
-            return productService.findByProductNumber(prn).get();
+    @GetMapping("/product")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public Product getProductsByProductNumber(@RequestParam int productnumber){
+        if(productService.findByProductNumber(productnumber).isPresent()){
+            return productService.findByProductNumber(productnumber).get();
         }else{
             return null;
         }
