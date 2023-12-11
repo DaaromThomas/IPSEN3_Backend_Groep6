@@ -1,6 +1,7 @@
 package com.hsleiden.vdlelie.controllers;
 
 import com.hsleiden.vdlelie.dao.ProductRepository;
+import com.hsleiden.vdlelie.dto.ChangeIsPackedRequest;
 import com.hsleiden.vdlelie.model.*;
 import com.hsleiden.vdlelie.services.OrderService;
 import com.hsleiden.vdlelie.services.PackagingService;
@@ -44,6 +45,15 @@ public class ProductController
         }
         Product product = new Product(prefferedPackaging, order, name, productnumber, ProductType.valueOf(productType));
         return productService.save(product);
+    }
+
+    //Returns 1 when successfully completed.
+    //returns 0 when something went wrong :)
+    @PostMapping("/product/ispacked")
+    @PreAuthorize("hasRole('ADMIN')")
+    public int changeIsPacked(@RequestBody ChangeIsPackedRequest changeIsPackedRequest){
+        return productService.setIsPackedForProduct(changeIsPackedRequest.isPacked(), changeIsPackedRequest.getProductNumber());
+
     }
 
     @GetMapping("/products")
