@@ -40,9 +40,8 @@ public class AuthorizationController {
     }
 
     @PostMapping("/refreshtoken")
-    public Object refreshtoken(@RequestBody TokenRefreshRequest request) {
+    public TokenRefreshResponse refreshtoken(@RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
-
         RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).get();
         String accessToken = jwtService.generateFromUsername(refreshToken.getAccount().getUsername());
         return new TokenRefreshResponse(accessToken, requestRefreshToken);
