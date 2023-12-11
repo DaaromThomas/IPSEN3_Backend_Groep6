@@ -54,6 +54,7 @@ public class ProductController
     public int changeIsPacked(@RequestBody ChangeIsPackedRequest changeIsPackedRequest){
         System.out.println("Received ChangeIsPackedRequest: " + changeIsPackedRequest);
         System.out.println("Productnumber: " + changeIsPackedRequest.getProductNumber());
+        System.out.println("Boolean: " + changeIsPackedRequest.isPacked());
         return productService.setIsPackedForProduct(changeIsPackedRequest.isPacked(), changeIsPackedRequest.getProductNumber());
     }
 

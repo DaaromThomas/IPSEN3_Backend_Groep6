@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class ChangeIsPackedRequest {
     private boolean isPacked;
     private int productNumber;
+
+
 }
