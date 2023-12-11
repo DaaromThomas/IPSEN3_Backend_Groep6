@@ -5,6 +5,7 @@ import com.hsleiden.vdlelie.dto.ResetPassRequest;
 import com.hsleiden.vdlelie.dto.SignInRequest;
 import com.hsleiden.vdlelie.dto.SignUpRequest;
 import com.hsleiden.vdlelie.model.Account;
+import com.hsleiden.vdlelie.model.RefreshToken;
 import com.hsleiden.vdlelie.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.beans.Encoder;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final AccountRepository accountRepository;
+    private final RefreshTokenService refreshTokenService;
     private final AccountServiceImpl accountService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -57,7 +59,9 @@ public class AuthenticationService {
         Account user = userFromRepo.get();
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED); }
         var jwt = jwtService.generateToken(user);
-        return JwtAuthenticationResponse.builder().token(jwt).build();
+       var balls = refreshTokenService.findByToken(jwt);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getUsername());
+        return JwtAuthenticationResponse.builder().token(jwt).refreshToken(refreshToken.getToken()).build();
     }
 
 }

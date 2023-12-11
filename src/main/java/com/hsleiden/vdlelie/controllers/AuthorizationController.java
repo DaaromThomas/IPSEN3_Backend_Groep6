@@ -1,12 +1,15 @@
 package com.hsleiden.vdlelie.controllers;
 
 
-import com.hsleiden.vdlelie.dto.JwtAuthenticationResponse;
-import com.hsleiden.vdlelie.dto.ResetPassRequest;
-import com.hsleiden.vdlelie.dto.SignInRequest;
-import com.hsleiden.vdlelie.dto.SignUpRequest;
+import com.hsleiden.vdlelie.dto.*;
+import com.hsleiden.vdlelie.exceptions.TokenRefreshException;
+import com.hsleiden.vdlelie.model.RefreshToken;
 import com.hsleiden.vdlelie.services.AuthenticationService;
+import com.hsleiden.vdlelie.services.JwtService;
+import com.hsleiden.vdlelie.services.RefreshTokenService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthorizationController {
     private final AuthenticationService authenticationService;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtService jwtService;
 
     @PostMapping("/signup")
     @PreAuthorize("hasRole('ADMIN')")
@@ -34,5 +39,13 @@ public class AuthorizationController {
         authenticationService.resetPassword(request);
     }
 
+    @PostMapping("/refreshtoken")
+    public Object refreshtoken(@RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
 
-}
+        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).get();
+        String accessToken = jwtService.generateFromUsername(refreshToken.getAccount().getUsername());
+        return new TokenRefreshResponse(accessToken, requestRefreshToken);
+    }
+    }
+
