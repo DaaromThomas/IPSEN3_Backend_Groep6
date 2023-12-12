@@ -9,6 +9,7 @@ import com.hsleiden.vdlelie.model.RefreshToken;
 import com.hsleiden.vdlelie.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,7 @@ public class AuthenticationService {
     }
 
 
-    public JwtAuthenticationResponse signin(SignInRequest request) {
+    public ResponseEntity<JwtAuthenticationResponse> signin(SignInRequest request) {
         var userFromRepo = accountRepository.findByName(request.getUsername());
         if(userFromRepo.isEmpty()){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -59,9 +60,8 @@ public class AuthenticationService {
         Account user = userFromRepo.get();
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED); }
         var jwt = jwtService.generateToken(user);
-       var balls = refreshTokenService.findByToken(jwt);
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getUsername());
-        return JwtAuthenticationResponse.builder().token(jwt).refreshToken(refreshToken.getToken()).build();
+        var refreshToken = refreshTokenService.createRefreshToken(user.getUsername());
+        return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).refreshToken(refreshToken.getToken()).build());
     }
 
 }
