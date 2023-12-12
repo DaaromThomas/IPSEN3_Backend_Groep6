@@ -14,11 +14,13 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,21 +29,23 @@ public class RefreshTokenController {
     private final JwtService jwtService;
 
     @PostMapping("/refreshtoken")
-    public TokenRefreshResponse refreshtoken(@RequestBody @Valid TokenRefreshRequest request) {
+    public ResponseEntity<TokenRefreshResponse> refreshtoken(@RequestBody @Valid TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
         Optional<RefreshToken> optionalrefreshToken = refreshTokenService.findByToken(requestRefreshToken);
         if(optionalrefreshToken.isPresent()){
             RefreshToken refreshToken = optionalrefreshToken.get();
             this.refreshTokenService.verifyExpiration(refreshToken);
             String accessToken = jwtService.generateFromUsername(refreshToken.getAccount().getUsername());
-            return new TokenRefreshResponse(accessToken, requestRefreshToken);
+            TokenRefreshResponse response = new TokenRefreshResponse(accessToken, requestRefreshToken);
+            return ResponseEntity.ok(response);
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Refresh token not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @PostMapping("/refreshtoken/delete")
-    public void deleteRefreshToken(@RequestBody @NotEmpty String token) {
-        RefreshToken refreshToken = refreshTokenService.findByToken(token).get();
-        this.refreshTokenService.deleteToken(refreshToken);
+    @DeleteMapping("/refreshtoken")
+    public void deleteRefreshToken(@RequestParam String refreshToken) {
+        System.out.println("deleteRefreshToken " + refreshToken);
+         RefreshToken refreshTokenfromDB = refreshTokenService.findByToken(refreshToken).get();
+         this.refreshTokenService.deleteToken(refreshTokenfromDB);
     }
 }
