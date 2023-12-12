@@ -6,6 +6,7 @@ import com.hsleiden.vdlelie.model.*;
 import com.hsleiden.vdlelie.services.OrderService;
 import com.hsleiden.vdlelie.services.PackagingService;
 import com.hsleiden.vdlelie.services.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,15 +16,13 @@ import java.util.List;
 public class ProductController
 {
     private final ProductService productService;
-    private final ProductRepository productRepository;
     private final PackagingService packagingService;
     private final OrderService orderService;
 
-    public ProductController(ProductService productService, PackagingService packagingService, OrderService orderService, ProductRepository productRepository) {
+    public ProductController(ProductService productService, PackagingService packagingService, OrderService orderService) {
         this.productService = productService;
         this.packagingService = packagingService;
         this.orderService = orderService;
-        this.productRepository = productRepository;
     }
 
     @PostMapping("/products")
