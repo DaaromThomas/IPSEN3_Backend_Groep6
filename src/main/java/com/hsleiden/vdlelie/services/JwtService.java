@@ -43,6 +43,17 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolvers.apply(claims);
     }
+    public String generateFromUsername(String username){
+        var jwt = Jwts
+                .builder()
+                .setClaims(new HashMap<>())
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+         return jwt;
+    }
 
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts

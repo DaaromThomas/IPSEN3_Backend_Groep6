@@ -1,12 +1,15 @@
 package com.hsleiden.vdlelie.controllers;
 
 
-import com.hsleiden.vdlelie.dto.JwtAuthenticationResponse;
-import com.hsleiden.vdlelie.dto.ResetPassRequest;
-import com.hsleiden.vdlelie.dto.SignInRequest;
-import com.hsleiden.vdlelie.dto.SignUpRequest;
+import com.hsleiden.vdlelie.dto.*;
+import com.hsleiden.vdlelie.exceptions.TokenRefreshException;
+import com.hsleiden.vdlelie.model.RefreshToken;
 import com.hsleiden.vdlelie.services.AuthenticationService;
+import com.hsleiden.vdlelie.services.JwtService;
+import com.hsleiden.vdlelie.services.RefreshTokenService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +28,7 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login")
-    public JwtAuthenticationResponse signIn(@RequestBody SignInRequest request){
+    public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody SignInRequest request){
         return authenticationService.signin(request);
     }
 
@@ -33,6 +36,5 @@ public class AuthorizationController {
     public void resetPassword(@RequestBody ResetPassRequest request){
         authenticationService.resetPassword(request);
     }
+    }
 
-
-}
