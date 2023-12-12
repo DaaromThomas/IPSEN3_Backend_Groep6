@@ -29,7 +29,7 @@ public class RefreshTokenController {
     private final JwtService jwtService;
 
     @PostMapping("/refreshtoken")
-    public ResponseEntity<TokenRefreshResponse> refreshtoken(@RequestBody @Valid TokenRefreshRequest request) {
+    public ResponseEntity<?> refreshtoken(@RequestBody @Valid TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
         Optional<RefreshToken> optionalrefreshToken = refreshTokenService.findByToken(requestRefreshToken);
         if(optionalrefreshToken.isPresent()){
