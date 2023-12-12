@@ -60,7 +60,13 @@ public class AuthenticationService {
         Account user = userFromRepo.get();
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED); }
         var jwt = jwtService.generateToken(user);
-        var refreshToken = refreshTokenService.createRefreshToken(user.getUsername());
+         var refreshToken = new RefreshToken();
+        try{
+             refreshToken = refreshTokenService.createRefreshToken(user.getUsername());
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+        }
+        
         return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).refreshToken(refreshToken.getToken()).build());
     }
 

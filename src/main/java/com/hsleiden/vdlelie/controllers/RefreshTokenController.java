@@ -6,7 +6,7 @@ import com.hsleiden.vdlelie.model.RefreshToken;
 import com.hsleiden.vdlelie.services.JwtService;
 import com.hsleiden.vdlelie.services.RefreshTokenService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;

@@ -14,28 +14,32 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 @Service
 public class RefreshTokenService {
-    @Value("${jwt.refresh.expiration.ms}")
-    private Long refreshTokenDurationMs;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final AccountRepository accountRepository;
+    private final Long refreshTokenDurationMs;
 
     @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
-    private AccountRepository accountRepository;
+    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, AccountRepository accountRepository, @Value("${jwt.refresh.expiration.ms}") Long refreshTokenDurationMs) {
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.accountRepository = accountRepository;
+        this.refreshTokenDurationMs = refreshTokenDurationMs;
+    }
 
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 
-    public RefreshToken createRefreshToken(String accountName) {
+    public RefreshToken createRefreshToken(String accountName) throws AccountNotFoundException {
         RefreshToken refreshToken = new RefreshToken();
-        if(accountRepository.findByName(accountName).isEmpty()){
-            return null;
-            //todo fix null return
+        Optional<Account> optionalAccount = accountRepository.findByName(accountName);
+        if(optionalAccount.isEmpty()){
+            throw new AccountNotFoundException("Account not found: " + accountName);
         }
-       Account account = accountRepository.findByName(accountName).get();
+        Account account = optionalAccount.get();
         Optional<RefreshToken> currentRefreshToken = refreshTokenRepository.findByAccount(account);
         currentRefreshToken.ifPresent(token -> refreshTokenRepository.delete(token));
         refreshToken.setAccount(account);
@@ -53,6 +57,7 @@ public class RefreshTokenService {
         }
         return token;
     }
+
     public void deleteToken(RefreshToken refreshToken){
         refreshTokenRepository.delete(refreshToken);
     }
