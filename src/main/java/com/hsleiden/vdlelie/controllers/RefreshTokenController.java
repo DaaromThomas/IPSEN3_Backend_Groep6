@@ -5,12 +5,19 @@ import com.hsleiden.vdlelie.dto.TokenRefreshResponse;
 import com.hsleiden.vdlelie.model.RefreshToken;
 import com.hsleiden.vdlelie.services.JwtService;
 import com.hsleiden.vdlelie.services.RefreshTokenService;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+
 
 import java.util.Optional;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +26,7 @@ public class RefreshTokenController {
     private final JwtService jwtService;
 
     @PostMapping("/refreshtoken")
-    public TokenRefreshResponse refreshtoken(@RequestBody TokenRefreshRequest request) {
+    public TokenRefreshResponse refreshtoken(@RequestBody @Valid TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
         Optional<RefreshToken> optionalrefreshToken = refreshTokenService.findByToken(requestRefreshToken);
         if(optionalrefreshToken.isPresent()){
@@ -28,12 +35,11 @@ public class RefreshTokenController {
             String accessToken = jwtService.generateFromUsername(refreshToken.getAccount().getUsername());
             return new TokenRefreshResponse(accessToken, requestRefreshToken);
         }
-        return null;
-
-
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Refresh token not found");
     }
+
     @PostMapping("/refreshtoken/delete")
-    public void deleteRefreshToken(@RequestBody String token) {
+    public void deleteRefreshToken(@RequestBody @NotEmpty String token) {
         RefreshToken refreshToken = refreshTokenService.findByToken(token).get();
         this.refreshTokenService.deleteToken(refreshToken);
     }
