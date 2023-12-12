@@ -15,7 +15,13 @@ public class ProductServiceImpl implements ProductService {
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+    @Override
+    public int setIsPackedForProduct(boolean isPacked, int productNumber){
+        return this.productRepository.setIsPackedForProduct(isPacked, productNumber);
+    }
 
+    @Override
+    public Optional<Product> findByProductNumber(int productnumber) { return productRepository.findByProductnumber(productnumber);}
     @Override
     public Optional<Product> findById(String id) {
         return productRepository.findById(id);
