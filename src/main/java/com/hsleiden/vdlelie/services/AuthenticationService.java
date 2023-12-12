@@ -5,9 +5,11 @@ import com.hsleiden.vdlelie.dto.ResetPassRequest;
 import com.hsleiden.vdlelie.dto.SignInRequest;
 import com.hsleiden.vdlelie.dto.SignUpRequest;
 import com.hsleiden.vdlelie.model.Account;
+import com.hsleiden.vdlelie.model.RefreshToken;
 import com.hsleiden.vdlelie.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.beans.Encoder;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final AccountRepository accountRepository;
+    private final RefreshTokenService refreshTokenService;
     private final AccountServiceImpl accountService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -49,7 +52,7 @@ public class AuthenticationService {
     }
 
 
-    public JwtAuthenticationResponse signin(SignInRequest request) {
+    public ResponseEntity<JwtAuthenticationResponse> signin(SignInRequest request) {
         var userFromRepo = accountRepository.findByName(request.getUsername());
         if(userFromRepo.isEmpty()){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -57,7 +60,14 @@ public class AuthenticationService {
         Account user = userFromRepo.get();
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED); }
         var jwt = jwtService.generateToken(user);
-        return JwtAuthenticationResponse.builder().token(jwt).build();
+         var refreshToken = new RefreshToken();
+        try{
+             refreshToken = refreshTokenService.createRefreshToken(user.getUsername());
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+        }
+        
+        return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).refreshToken(refreshToken.getToken()).build());
     }
 
 }
