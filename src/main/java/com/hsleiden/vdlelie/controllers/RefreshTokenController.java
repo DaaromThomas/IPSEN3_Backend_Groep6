@@ -39,7 +39,7 @@ public class RefreshTokenController {
             TokenRefreshResponse response = new TokenRefreshResponse(accessToken, requestRefreshToken);
             return ResponseEntity.ok(response);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Refresh token not found");
     }
 
     @DeleteMapping("/refreshtoken")
