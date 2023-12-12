@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthorizationController {
     private final AuthenticationService authenticationService;
-    private final RefreshTokenService refreshTokenService;
-    private final JwtService jwtService;
 
     @PostMapping("/signup")
     @PreAuthorize("hasRole('ADMIN')")
@@ -37,14 +35,6 @@ public class AuthorizationController {
     @PatchMapping("/passwordreset")
     public void resetPassword(@RequestBody ResetPassRequest request){
         authenticationService.resetPassword(request);
-    }
-
-    @PostMapping("/refreshtoken")
-    public TokenRefreshResponse refreshtoken(@RequestBody TokenRefreshRequest request) {
-        String requestRefreshToken = request.getRefreshToken();
-        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).get();
-        String accessToken = jwtService.generateFromUsername(refreshToken.getAccount().getUsername());
-        return new TokenRefreshResponse(accessToken, requestRefreshToken);
     }
     }
 
