@@ -79,7 +79,7 @@ public class PackagingController
     }
 
     @PatchMapping("/packages/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public void updatePackage(@PathVariable String id, @RequestParam(required = false) String name, @RequestParam(required = false) String group, @RequestParam(required = false) Integer amount, @RequestParam(required = false) Integer minAmount){
         Optional<Packaging> possiblePackaging = packagingService.findById(id);
 
@@ -96,6 +96,7 @@ public class PackagingController
         if (group != null){
             packaging.setPackagingGroup(group);
         }
+
 
         if (amount != null){
             packaging.setAmountinstock(amount);
