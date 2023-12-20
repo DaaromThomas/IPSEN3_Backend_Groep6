@@ -14,7 +14,6 @@ public class Customer
     private String address;
     @Column(nullable = true)
     private String phonenumber;
-    @Column(nullable = true)
     private String email;
     @ManyToOne
     @JoinColumn(name = "preferredPackage")
