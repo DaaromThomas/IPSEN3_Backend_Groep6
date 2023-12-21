@@ -4,6 +4,7 @@ import com.hsleiden.vdlelie.dao.CustomerRepository;
 import com.hsleiden.vdlelie.dao.PackagingRepository;
 import com.hsleiden.vdlelie.model.Account;
 import com.hsleiden.vdlelie.model.Customer;
+import com.hsleiden.vdlelie.model.Order;
 import com.hsleiden.vdlelie.model.Packaging;
 import com.hsleiden.vdlelie.services.CustomerService;
 import com.hsleiden.vdlelie.services.PackagingService;
@@ -80,8 +81,7 @@ public class CustomerController
 
     @PatchMapping("/customers/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public void updateCustomer(@PathVariable String id, @RequestParam(required = false) String address, @RequestParam(required = false) String name, @RequestParam(required = false) String phonenumber, @RequestParam(required = false) String email){
-
+    public void updateCustomer(@PathVariable String id, @RequestParam(required = false) String address, @RequestParam(required = false) String name, @RequestParam(required = false) String phonenumber, @RequestParam(required = false) String email, @RequestParam(required = false) String prefferedPackageId){
         Optional<Customer> possibleCustomer = customerService.findById(id);
 
         if (possibleCustomer.isEmpty()){
@@ -104,6 +104,14 @@ public class CustomerController
 
         if (email != null){
             customer.setEmail(email);
+        }
+
+        if (prefferedPackageId != null){
+            Packaging prefferedPackaging = null;
+            if (packagingService.findById(prefferedPackageId).isPresent()){
+                prefferedPackaging = packagingService.findById(prefferedPackageId).get();
+                customer.setPreferredPackaging(prefferedPackaging);
+            }
         }
 
         customerService.save(customer);
