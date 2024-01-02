@@ -37,6 +37,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .location(locationService.findById(request.getLocationID()).get())
                 .role(Role.ROLE_USER)
+                .email(request.getEmail())
                 .build();
 
         user = accountService.save(user);
