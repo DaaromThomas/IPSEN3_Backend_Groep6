@@ -5,8 +5,10 @@ import com.hsleiden.vdlelie.dao.PackagingRepository;
 import com.hsleiden.vdlelie.model.Account;
 import com.hsleiden.vdlelie.model.Customer;
 import com.hsleiden.vdlelie.model.Packaging;
+import com.hsleiden.vdlelie.model.Product;
 import com.hsleiden.vdlelie.services.CustomerService;
 import com.hsleiden.vdlelie.services.PackagingService;
+import com.hsleiden.vdlelie.services.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +23,13 @@ public class CustomerController
     private final CustomerService customerService;
     private final CustomerRepository customerRepository;
     private final PackagingService packagingService;
+    private final ProductService productService;
 
-    public CustomerController(CustomerService customerService, CustomerRepository customerRepository, PackagingService packagingService) {
+    public CustomerController(CustomerService customerService, CustomerRepository customerRepository, PackagingService packagingService, ProductService productService) {
         this.customerService = customerService;
         this.customerRepository = customerRepository;
         this.packagingService = packagingService;
+        this.productService = productService;
     }
 
     @PostMapping("/customers")
@@ -109,6 +113,22 @@ public class CustomerController
         }
 
         customerService.save(customer);
+    }
+
+    @GetMapping("/customers/{id}/hasUnpackedProducts")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public boolean hasUnpackedProducts(@PathVariable String id) {
+        Optional<Customer> customerOptional = customerService.findById(id);
+
+        if (customerOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+        }
+
+        Customer customer = customerOptional.get();
+
+        List<Product> customerProducts = productService.findUnpackedProductsByCustomer(customer);
+
+        return !customerProducts.isEmpty();
     }
 
 }

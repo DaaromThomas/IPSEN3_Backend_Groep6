@@ -1,7 +1,9 @@
 package com.hsleiden.vdlelie.services;
 
 import com.hsleiden.vdlelie.dao.ProductRepository;
+import com.hsleiden.vdlelie.model.Customer;
 import com.hsleiden.vdlelie.model.Product;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,16 +14,21 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
+    @Autowired
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
     @Override
-    public int setIsPackedForProduct(boolean isPacked, int productNumber){
+    public int setIsPackedForProduct(boolean isPacked, int productNumber) {
         return this.productRepository.setIsPackedForProduct(isPacked, productNumber);
     }
 
     @Override
-    public Optional<Product> findByProductNumber(int productnumber) { return productRepository.findByProductnumber(productnumber);}
+    public Optional<Product> findByProductNumber(int productnumber) {
+        return productRepository.findByProductnumber(productnumber);
+    }
+
     @Override
     public Optional<Product> findById(String id) {
         return productRepository.findById(id);
@@ -40,5 +47,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void delete(Product product) {
         productRepository.delete(product);
+    }
+
+    @Override
+    public List<Product> findUnpackedProductsByCustomer(Customer customer) {
+        return productRepository.findByOrderCustomerAndIsPacked(customer, false);
     }
 }
