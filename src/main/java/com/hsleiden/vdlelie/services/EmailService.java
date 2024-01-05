@@ -25,7 +25,6 @@ public class EmailService {
     private final TemplateEngine templateEngine;
     private final AccountServiceImpl accountService;
 
-    private String[] peopletosendto = {"r.j.colijn@hotmail.com", "draakje11111@gmail.com"};
 
     @Autowired
     public EmailService(TemplateEngine templateEngine, AccountServiceImpl accountService){
@@ -61,7 +60,7 @@ public class EmailService {
         List<Account> accounts = accountService.findAll();
         List<String> emailList = new ArrayList<String>();
         for(Account account : accounts){
-            if (account.getEmail() != null){
+            if (account.getEmail() != null && account.isNotification() == true){
                 emailList.add(account.getEmail());
             }
         }

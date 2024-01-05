@@ -38,6 +38,7 @@ public class AuthenticationService {
                 .location(locationService.findById(request.getLocationID()).get())
                 .role(Role.ROLE_USER)
                 .email(request.getEmail())
+                .notification(request.isNotification())
                 .build();
 
         user = accountService.save(user);

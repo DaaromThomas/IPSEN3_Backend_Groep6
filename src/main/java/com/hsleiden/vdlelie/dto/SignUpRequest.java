@@ -15,5 +15,6 @@ public class SignUpRequest {
     String password;
     String locationID;
     String email;
+    boolean notification;
 
 }
