@@ -4,6 +4,7 @@ import com.hsleiden.vdlelie.model.Account;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -21,33 +22,17 @@ import java.util.Arrays;
 @Service
 public class EmailService {
 
-    JavaMailSender mailSender = getJavaMailSender();
+    @Autowired
+    private JavaMailSender emailSender;
     private final TemplateEngine templateEngine;
     private final AccountServiceImpl accountService;
+
 
 
     @Autowired
     public EmailService(TemplateEngine templateEngine, AccountServiceImpl accountService){
         this.templateEngine = templateEngine;
         this.accountService = accountService;
-    }
-
-    @Bean
-    public JavaMailSender getJavaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-
-        mailSender.setUsername("draakje11111@gmail.com");
-        mailSender.setPassword("jkww pvwu suku pdoe ");
-
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "false");
-
-        return mailSender;
     }
 
 
@@ -81,14 +66,14 @@ public class EmailService {
 
 
      void sendEmail(Context context, String subject, String[] to){
-         MimeMessage message = mailSender.createMimeMessage();
+         MimeMessage message = emailSender.createMimeMessage();
          MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
          try {
              helper.setTo(to);
              helper.setSubject(subject);
              String content = templateEngine.process("stocknotification", context);
              helper.setText(content, true);
-             mailSender.send(message);
+             emailSender.send(message);
          } catch (MessagingException e){
 
          }
