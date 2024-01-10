@@ -1,9 +1,12 @@
 package com.hsleiden.vdlelie.controllers;
 
+import com.hsleiden.vdlelie.dao.ProductRepository;
+import com.hsleiden.vdlelie.dto.ChangeIsPackedRequest;
 import com.hsleiden.vdlelie.model.*;
 import com.hsleiden.vdlelie.services.OrderService;
 import com.hsleiden.vdlelie.services.PackagingService;
 import com.hsleiden.vdlelie.services.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +46,14 @@ public class ProductController
         return productService.save(product);
     }
 
+    //Returns 1 when successfully completed.
+    //returns 0 when something went wrong :)
+    @PostMapping("/product/ispacked")
+    @PreAuthorize("hasRole('ADMIN')")
+    public int changeIsPacked(@RequestBody ChangeIsPackedRequest changeIsPackedRequest){
+        return productService.setIsPackedForProduct(changeIsPackedRequest.isPacked(), changeIsPackedRequest.getProductNumber());
+    }
+
     @GetMapping("/products")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public List<Product> getAllProducts(){
@@ -56,6 +67,16 @@ public class ProductController
             return productService.findById(id).get();
         }
         else {
+            return null;
+        }
+    }
+
+    @GetMapping("/product")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public Product getProductsByProductNumber(@RequestParam int productnumber){
+        if(productService.findByProductNumber(productnumber).isPresent()){
+            return productService.findByProductNumber(productnumber).get();
+        }else{
             return null;
         }
     }

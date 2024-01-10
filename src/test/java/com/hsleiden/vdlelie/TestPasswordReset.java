@@ -26,54 +26,54 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class TestPasswordReset {
 
-    private AuthenticationService authenticationService;
+   private AuthenticationService authenticationService;
 
-    @Mock
-    private AccountRepository accountRepository;
+   @Mock
+   private AccountRepository accountRepository;
 
-    @Mock
-    private AccountServiceImpl accountService;
+   @Mock
+   private AccountServiceImpl accountService;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
-    @Mock
-    private JwtService jwtService;
-    @Mock
-    private LocationServiceImpl locationService;
+   @Mock
+   private PasswordEncoder passwordEncoder;
+   @Mock
+   private JwtService jwtService;
+   @Mock
+   private LocationServiceImpl locationService;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        authenticationService = new AuthenticationService(accountRepository, accountService, passwordEncoder, jwtService, locationService);
-    }
+   @BeforeEach
+   public void setUp() {
+       MockitoAnnotations.initMocks(this);
+       authenticationService = new AuthenticationService(accountRepository, accountService, passwordEncoder, jwtService, locationService);
+   }
 
-    @Test
-    public void testResetPassword() {
-        // Arrange
-        String username = "ExampleUser";
-        String newPassword = "newPass";
-        Role role = Role.ROLE_ADMIN;
-        ResetPassRequest request = new ResetPassRequest(username, newPassword);
+   @Test
+   public void testResetPassword() {
+       // Arrange
+       String username = "ExampleUser";
+       String newPassword = "newPass";
+       Role role = Role.ROLE_ADMIN;
+       ResetPassRequest request = new ResetPassRequest(username, newPassword);
 
-        Account user = Account
-                .builder()
-                .employeenumber(1)
-                .name(username)
-                .password(passwordEncoder.encode(newPassword))
-                .role(role)
-                .location(new Location())
-                .build();;
-        when(accountRepository.findByName(username)).thenReturn(Optional.of(user));
-        when(passwordEncoder.encode(newPassword)).thenReturn("EncodedPass");
+       Account user = Account
+               .builder()
+               .employeenumber(1)
+               .name(username)
+               .password(passwordEncoder.encode(newPassword))
+               .role(role)
+               .location(new Location())
+               .build();;
+       when(accountRepository.findByName(username)).thenReturn(Optional.of(user));
+       when(passwordEncoder.encode(newPassword)).thenReturn("EncodedPass");
 
-        // Act
-        authenticationService.resetPassword(request);
+       // Act
+       authenticationService.resetPassword(request);
 
-        // Assert
-        verify(accountRepository).findByName(username);
-        verify(accountRepository).save(user);
-        assertEquals("EncodedPass", user.getPassword());
-    }
+       // Assert
+       verify(accountRepository).findByName(username);
+       verify(accountRepository).save(user);
+       assertEquals("EncodedPass", user.getPassword());
+   }
 
 
 }

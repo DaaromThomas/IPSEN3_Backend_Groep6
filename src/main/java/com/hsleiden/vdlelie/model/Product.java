@@ -1,6 +1,7 @@
 package com.hsleiden.vdlelie.model;
 
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,6 +20,8 @@ public class Product
     private String name;
     private int productnumber;
     private ProductType producttype;
+    @Column(name = "ispacked")
+    private boolean isPacked;
 
     public Product(Packaging prefferedPackage, Order order, String name, int productnumber, ProductType productType) {
         this.prefferedpackage = prefferedPackage;
@@ -26,7 +29,7 @@ public class Product
         this.name = name;
         this.productnumber = productnumber;
         this.producttype = productType;
-
+        isPacked = false;
     }
 
     public Product() {
@@ -79,5 +82,13 @@ public class Product
 
     public void setProducttype(ProductType producttype) {
         this.producttype = producttype;
+    }
+
+    public boolean isPacked() {
+        return isPacked;
+    }
+
+    public void setPacked(boolean packed) {
+        isPacked = packed;
     }
 }

@@ -4,6 +4,7 @@ import com.hsleiden.vdlelie.dao.PackagingRepository;
 import com.hsleiden.vdlelie.model.Customer;
 import com.hsleiden.vdlelie.model.Packaging;
 import com.hsleiden.vdlelie.model.Stock;
+import com.hsleiden.vdlelie.services.EmailService;
 import com.hsleiden.vdlelie.services.PackagingService;
 import com.hsleiden.vdlelie.services.StockService;
 import org.springframework.http.HttpStatus;
@@ -65,6 +66,7 @@ public class PackagingController
         return packagingService.findById(id);
     }
 
+
     @DeleteMapping("/packages/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public void deletePackage(@PathVariable String id){
@@ -79,7 +81,7 @@ public class PackagingController
     }
 
     @PatchMapping("/packages/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public void updatePackage(@PathVariable String id, @RequestParam(required = false) String name, @RequestParam(required = false) String group, @RequestParam(required = false) Integer amount, @RequestParam(required = false) Integer minAmount){
         Optional<Packaging> possiblePackaging = packagingService.findById(id);
 
@@ -96,6 +98,7 @@ public class PackagingController
         if (group != null){
             packaging.setPackagingGroup(group);
         }
+
 
         if (amount != null){
             packaging.setAmountinstock(amount);

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,12 +32,18 @@ public class Account implements UserDetails
     private Role role;
     @Column(name = "password")
     private String password;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "notification")
+    private boolean notification;
 
-    public Account(int employeeNumber, String name, Location location, Role role) {
+    public Account(int employeeNumber, String name, Location location, Role role, String email, boolean notification) {
         this.employeenumber = employeeNumber;
         this.name = name;
         this.location = location;
         this.role = role;
+        this.email = email;
+        this.notification = notification;
     }
 
 
@@ -86,6 +93,20 @@ public class Account implements UserDetails
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public boolean isNotification() {
+        return notification;
+    }
+
+    public void setNotification(boolean notification) {
+        this.notification = notification;
     }
 
     @Override
