@@ -59,7 +59,7 @@ public class EmailService {
         Context context = new Context();
         context.setVariable("amount", "There is only " + amount + " left");
         context.setVariable("name", "The stock " + name + " is running low");
-        context.setVariable("minAmount", "The minimum is " + minAmount);
+        context.setVariable("minAmount", "The minimum should be " + minAmount);
         return context;
     }
 
