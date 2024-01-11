@@ -37,8 +37,8 @@ public class EmailService {
 
 
     @Async
-    public void emailStockNotification(String amount, String name){
-        sendEmail(contextCreator(amount, name), "Notification: Stock running low", peopleToSendTo());
+    public void emailStockNotification(String amount, String name, String minAmount){
+        sendEmail(contextCreator(amount, name, minAmount), "Notification: Stock running low", peopleToSendTo());
     }
 
     public String[] peopleToSendTo(){
@@ -55,10 +55,11 @@ public class EmailService {
 
 
 
-    Context contextCreator(String amount, String name){
+    Context contextCreator(String amount, String name, String minAmount){
         Context context = new Context();
         context.setVariable("amount", "There is only " + amount + " left");
         context.setVariable("name", "The stock " + name + " is running low");
+        context.setVariable("minAmount", "The minimum should be " + minAmount);
         return context;
     }
 

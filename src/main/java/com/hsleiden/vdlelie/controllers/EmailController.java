@@ -18,8 +18,8 @@ public class EmailController {
 
     @PostMapping("/email/lowonstock")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public void email(@RequestParam String amount, @RequestParam String name){
-        emailService.emailStockNotification(amount, name);
+    public void email(@RequestParam String amount, @RequestParam String name, @RequestParam String minAmount){
+        emailService.emailStockNotification(amount, name, minAmount);
     }
 
 }
