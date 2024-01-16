@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @RestController
@@ -70,36 +71,44 @@ public class LogController
         String productId = requestParams.get("productId");
         int packagingAmount = Integer.parseInt(requestParams.get("packagingAmount"));
 
-        Log log = null;
-        Packaging packaging = null;
-        Product product = null;
+        Optional<Log> optionalLog = this.logService.findById(logId);
 
-        if (this.logService.findById(logId).isPresent()){
-            log = this.logService.findById(logId).get();
+        if (optionalLog.isPresent()) {
+            Log log = optionalLog.get();
+
+            if (!log.isReverted()) {
+                return processLogReversion(log, packagingId, productId, packagingAmount);
+            } else {
+                return ResponseEntity.badRequest().body(log);
+            }
         } else {
             return ResponseEntity.notFound().build();
         }
-
-        if (this.packagingService.findById(packagingId).isPresent()){
-            packaging = this.packagingService.findById(packagingId).get();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-
-        if (this.productService.findById(productId).isPresent()){
-            product = this.productService.findById(productId).get();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-
-        packaging.setAmountinstock(packaging.getAmountinstock() + packagingAmount);
-        this.packagingService.save(packaging);
-
-        product.setPacked(false);
-        this.productService.save(product);
-
-        return ResponseEntity.ok(log);
     }
+
+    private ResponseEntity<Log> processLogReversion(Log log, String packagingId, String productId, int packagingAmount) {
+        Optional<Packaging> optionalPackaging = this.packagingService.findById(packagingId);
+        Optional<Product> optionalProduct = this.productService.findById(productId);
+
+        if (optionalPackaging.isPresent() && optionalProduct.isPresent()) {
+            Packaging packaging = optionalPackaging.get();
+            Product product = optionalProduct.get();
+
+            packaging.setAmountinstock(packaging.getAmountinstock() + packagingAmount);
+            this.packagingService.save(packaging);
+
+            product.setPacked(false);
+            this.productService.save(product);
+
+            log.setReverted(true);
+            this.logService.save(log);
+
+            return ResponseEntity.ok(log);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 
     @GetMapping("/logs")
