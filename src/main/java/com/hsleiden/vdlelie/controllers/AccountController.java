@@ -4,6 +4,7 @@ import com.hsleiden.vdlelie.dao.AccountRepository;
 import com.hsleiden.vdlelie.model.Account;
 import com.hsleiden.vdlelie.model.Location;
 import com.hsleiden.vdlelie.services.AccountService;
+import com.hsleiden.vdlelie.services.JwtService;
 import com.hsleiden.vdlelie.services.LocationService;
 import com.hsleiden.vdlelie.model.Role;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,13 @@ public class AccountController {
 
     private final AccountRepository accountRepository;
     private final LocationService locationService;
+    private final JwtService jwtService;
 
-    public AccountController(AccountService accountService, LocationService locationService, AccountRepository accountRepository) {
+    public AccountController(AccountService accountService, LocationService locationService, AccountRepository accountRepository, JwtService jwtService) {
         this.accountService = accountService;
         this.locationService = locationService;
         this.accountRepository = accountRepository;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/accounts")
@@ -91,4 +94,12 @@ public class AccountController {
 
         accountService.save(account);
     }
+
+    @GetMapping("/currentuser")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public String currentUser(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        return jwtService.extractUserName(token);
+    }
+
 }
