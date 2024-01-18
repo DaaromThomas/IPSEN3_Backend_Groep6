@@ -5,6 +5,7 @@ import com.hsleiden.vdlelie.dto.PackageChangeRequest;
 import com.hsleiden.vdlelie.model.Customer;
 import com.hsleiden.vdlelie.model.Packaging;
 import com.hsleiden.vdlelie.model.Stock;
+import com.hsleiden.vdlelie.services.EmailService;
 import com.hsleiden.vdlelie.services.PackagingService;
 import com.hsleiden.vdlelie.services.StockService;
 import jakarta.validation.Valid;
@@ -66,6 +67,7 @@ public class PackagingController
     public Optional<Packaging> getPackageById(@PathVariable String id){
         return packagingService.findById(id);
     }
+
 
     @DeleteMapping("/packages/{id}")
     @PreAuthorize("hasRole('ADMIN')")
