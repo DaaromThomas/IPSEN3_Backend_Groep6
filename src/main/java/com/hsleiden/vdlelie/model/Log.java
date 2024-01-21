@@ -26,6 +26,8 @@ public class Log
     private LocalDate date;
     @Column(name = "timeoflog", columnDefinition = "timestamp(9)")
     private LocalTime time;
+    @Column(name = "reverted")
+    private boolean reverted;
 
     public Log(Account account, Product product, Packaging packaging, int packagingamount, LocalDate date, LocalTime time) {
         this.account = account;
@@ -34,6 +36,7 @@ public class Log
         this.packagingamount = packagingamount;
         this.date = date;
         this.time = time;
+        this.reverted = false;
     }
 
     public Log(){}
@@ -92,5 +95,13 @@ public class Log
 
     public void setTime(LocalTime time) {
         this.time = time;
+    }
+
+    public boolean isReverted() {
+        return reverted;
+    }
+
+    public void setReverted(boolean reverted) {
+        this.reverted = reverted;
     }
 }
