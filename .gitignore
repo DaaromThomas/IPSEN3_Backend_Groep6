@@ -31,10 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-
-# Ignore application properties
-application.properties
-
-#ignore sql
-create.sql

@@ -41,10 +41,13 @@ public class TestPasswordReset {
    @Mock
    private LocationServiceImpl locationService;
 
+   @Mock
+   private RefreshTokenService refreshTokenService;
+
    @BeforeEach
    public void setUp() {
        MockitoAnnotations.initMocks(this);
-       authenticationService = new AuthenticationService(accountRepository, accountService, passwordEncoder, jwtService, locationService);
+       authenticationService = new AuthenticationService(accountRepository, refreshTokenService, accountService, passwordEncoder, jwtService, locationService);
    }
 
    @Test
