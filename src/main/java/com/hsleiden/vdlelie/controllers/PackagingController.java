@@ -2,10 +2,8 @@ package com.hsleiden.vdlelie.controllers;
 
 import com.hsleiden.vdlelie.dao.PackagingRepository;
 import com.hsleiden.vdlelie.dto.PackageChangeRequest;
-import com.hsleiden.vdlelie.model.Customer;
 import com.hsleiden.vdlelie.model.Packaging;
 import com.hsleiden.vdlelie.model.Stock;
-import com.hsleiden.vdlelie.services.EmailService;
 import com.hsleiden.vdlelie.services.PackagingService;
 import com.hsleiden.vdlelie.services.StockService;
 import jakarta.validation.Valid;
@@ -112,7 +110,7 @@ public class PackagingController
 
         packagingService.save(packaging);
     }
-    @PostMapping("/packages/update")
+    @PutMapping("/packages/update")
     public void updatePackage(@RequestBody @Valid PackageChangeRequest packageChangeRequest){
         this.packagingService.updatePackageDetails(packageChangeRequest);
     }
