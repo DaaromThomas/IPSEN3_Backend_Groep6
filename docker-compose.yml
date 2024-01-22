@@ -5,13 +5,18 @@ services:
     image: postgres:latest
     restart: unless-stopped
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=user
-      - POSTGRES_DB=database
+      - POSTGRES_USER=user #user for the database
+      - POSTGRES_PASSWORD=password #password for the database user
+      - POSTGRES_DB=dbName #name of your default database
     volumes:
       - postgres-data:/var/lib/postgresql/data
+#    comment this out if you want a direct connection to the server using pgAdmin or similar tools
+#    ports:
+#      - "5432:5432"
     networks:
       - backend
+#      comment this out aswell if you want access to it externally (pgAdmin or similar tools)
+#      - external
 
   spring-app:
     build:
@@ -22,16 +27,20 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=db_name
-      - DB_USERNAME=db_user
-      - DB_PASSWORD=db_password
-      - MAIL_HOST=smtp.gmail.com
-      - MAIL_PORT=587
-      - MAIL_USER=email
-      - MAIL_PASSWORD=password
-      - JWT_SECRET=secret
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/dbName #this should be the name of the db you want the api to use
+      - SPRING_DATASOURCE_USERNAME=user #user for the database
+      - SPRING_DATASOURCE_PASSWORD=password #password for the user of the database
+      - SPRING_JPA_SHOW-SQL=false
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_USERNAME=user #email account for stock notification
+      - SPRING_MAIL_PASSWORD=password #password for the emial account
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+      - JWT_SECRET=secret #the jwt secret
+      - JWT_EXPIRATION-TIME=3600000
+      - JWT_REFRESH_EXPIRATION_MS=1000000000000
+      - SPRING_JPA_HIBERNATE_DDL-auto=update
     networks:
       - backend
       - external
