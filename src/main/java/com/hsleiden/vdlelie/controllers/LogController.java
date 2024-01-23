@@ -38,6 +38,7 @@ public class LogController
     @PostMapping("/logs")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public Log saveLog(@RequestParam String accountId, @RequestParam String productId, @RequestParam String packagingId, @RequestParam int packagingamount){
+        System.out.println("SaveLog()");
         Account account = null;
         Product product = null;
         Packaging packaging = null;
@@ -75,6 +76,9 @@ public class LogController
 
         if (optionalLog.isPresent()) {
             Log log = optionalLog.get();
+
+            log.setDate(log.getDate());
+            log.setTime(log.getTime());
 
             if (!log.isReverted()) {
                 return processLogReversion(log, packagingId, productId, packagingAmount);
