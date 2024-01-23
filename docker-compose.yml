@@ -41,6 +41,7 @@ services:
       - JWT_EXPIRATION-TIME=3600000
       - JWT_REFRESH_EXPIRATION_MS=1000000000000
       - SPRING_JPA_HIBERNATE_DDL-auto=update
+      - ALLOWED_ORIGINS=*
     networks:
       - backend
       - external
