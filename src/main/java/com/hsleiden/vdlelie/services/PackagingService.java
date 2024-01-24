@@ -1,5 +1,6 @@
 package com.hsleiden.vdlelie.services;
 
+import com.hsleiden.vdlelie.dto.PackageChangeRequest;
 import com.hsleiden.vdlelie.model.Packaging;
 import org.springframework.stereotype.Service;
 
@@ -15,4 +16,5 @@ public interface PackagingService
     List<Packaging> findAll();
 
     void delete(Packaging _package);
+    Packaging updatePackageDetails(PackageChangeRequest request);
 }

@@ -1,8 +1,13 @@
 package com.hsleiden.vdlelie.services;
 
 import com.hsleiden.vdlelie.dao.PackagingRepository;
+import com.hsleiden.vdlelie.dto.PackageChangeRequest;
 import com.hsleiden.vdlelie.model.Packaging;
+import com.hsleiden.vdlelie.model.Product;
+import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,5 +39,17 @@ public class PackagingServiceImpl implements PackagingService
     @Override
     public void delete(Packaging _package) {
         packagingRepository.delete(_package);
+    }
+
+    @Transactional
+    public Packaging updatePackageDetails(PackageChangeRequest request) {
+        Packaging productPackage = packagingRepository.findById(request.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + request.getId()));
+
+
+        productPackage.setAmountinstock(request.getAmountInStock());
+        productPackage.setMinAmount(request.getMinAmount());
+        productPackage.setName(request.getName());
+        return packagingRepository.save(productPackage);
     }
 }
