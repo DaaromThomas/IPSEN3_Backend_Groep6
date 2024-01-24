@@ -76,6 +76,9 @@ public class LogController
         if (optionalLog.isPresent()) {
             Log log = optionalLog.get();
 
+            log.setDate(log.getDate());
+            log.setTime(log.getTime());
+
             if (!log.isReverted()) {
                 return processLogReversion(log, packagingId, productId, packagingAmount);
             } else {

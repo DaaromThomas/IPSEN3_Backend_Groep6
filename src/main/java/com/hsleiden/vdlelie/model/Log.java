@@ -1,6 +1,7 @@
 package com.hsleiden.vdlelie.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,9 +23,11 @@ public class Log
     @JoinColumn(name = "packaging")
     private Packaging packaging;
     private int packagingamount;
-    @Column(name = "dateoflog")
+    @Column(name = "dateoflog", updatable = false)
+    @CreationTimestamp
     private LocalDate date;
-    @Column(name = "timeoflog", columnDefinition = "timestamp(9)")
+    @Column(name = "timeoflog", updatable = false)
+    @CreationTimestamp
     private LocalTime time;
     @Column(name = "reverted")
     private boolean reverted;
