@@ -38,7 +38,6 @@ public class LogController
     @PostMapping("/logs")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public Log saveLog(@RequestParam String accountId, @RequestParam String productId, @RequestParam String packagingId, @RequestParam int packagingamount){
-        System.out.println("SaveLog()");
         Account account = null;
         Product product = null;
         Packaging packaging = null;
