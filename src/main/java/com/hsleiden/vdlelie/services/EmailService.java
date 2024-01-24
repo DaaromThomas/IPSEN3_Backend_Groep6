@@ -45,7 +45,7 @@ public class EmailService {
         List<Account> accounts = accountService.findAll();
         List<String> emailList = new ArrayList<String>();
         for(Account account : accounts){
-            if (account.getEmail() != null && account.isNotification() == true){
+            if (account.getEmail() != null && account.isNotification()){
                 emailList.add(account.getEmail());
             }
         }
@@ -57,7 +57,7 @@ public class EmailService {
 
     Context contextCreator(String amount, String name, String minAmount){
         Context context = new Context();
-        context.setVariable("amount", "There is only " + amount + " left");
+        context.setVariable("amount", "There are only " + amount + " left");
         context.setVariable("name", "The stock " + name + " is running low");
         context.setVariable("minAmount", "The minimum should be " + minAmount);
         return context;
