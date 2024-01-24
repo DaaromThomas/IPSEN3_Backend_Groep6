@@ -70,7 +70,6 @@ public class PackagingController
     @DeleteMapping("/packages/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public void deletePackage(@PathVariable String id){
-        System.out.println(id);
         if (packagingService.findById(id).isPresent())
         {
             Packaging _package =  packagingService.findById(id).get();
