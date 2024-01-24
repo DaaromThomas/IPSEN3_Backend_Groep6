@@ -47,7 +47,7 @@ public class PackagingController
     @GetMapping("/packages")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public List<Packaging> getAllPackages(){
-        return packagingService.findAll();
+        return packagingService.findByIsDeletedFalse();
     }
 
     @GetMapping("/packages/name")
@@ -70,10 +70,12 @@ public class PackagingController
     @DeleteMapping("/packages/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public void deletePackage(@PathVariable String id){
+        System.out.println(id);
         if (packagingService.findById(id).isPresent())
         {
             Packaging _package =  packagingService.findById(id).get();
-            packagingService.delete(_package);
+            _package.setDeleted(true);
+            this.packagingService.save(_package);
         }
         else {
             return;

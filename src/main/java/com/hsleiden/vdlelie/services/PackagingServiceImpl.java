@@ -3,7 +3,6 @@ package com.hsleiden.vdlelie.services;
 import com.hsleiden.vdlelie.dao.PackagingRepository;
 import com.hsleiden.vdlelie.dto.PackageChangeRequest;
 import com.hsleiden.vdlelie.model.Packaging;
-import com.hsleiden.vdlelie.model.Product;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -51,5 +50,11 @@ public class PackagingServiceImpl implements PackagingService
         productPackage.setMinAmount(request.getMinAmount());
         productPackage.setName(request.getName());
         return packagingRepository.save(productPackage);
+
+    }
+
+    @Override
+    public List<Packaging> findByIsDeletedFalse() {
+        return this.packagingRepository.findByisDeletedFalse();
     }
 }
