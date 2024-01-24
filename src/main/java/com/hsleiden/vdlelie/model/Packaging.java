@@ -1,5 +1,6 @@
 package com.hsleiden.vdlelie.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +17,8 @@ public class Packaging
     private int minamount;
     private String name;
     private String packaginggroup;
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    private boolean isDeleted;
 
     public Packaging(Stock stock, int amountinstock, int minAmount, String name, String packagingGroup) {
         this.stock = stock;
@@ -75,5 +78,12 @@ public class Packaging
 
     public void setPackagingGroup(String packagingGroup) {
         this.packaginggroup = packagingGroup;
+    }
+
+    public void setDeleted(boolean isDeleted){
+        this.isDeleted = isDeleted;
+    }
+    public boolean getDeleted(){
+        return this.isDeleted;
     }
 }

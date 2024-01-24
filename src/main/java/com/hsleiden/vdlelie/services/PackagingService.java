@@ -17,4 +17,5 @@ public interface PackagingService
 
     void delete(Packaging _package);
     Packaging updatePackageDetails(PackageChangeRequest request);
+    List<Packaging> findByIsDeletedFalse();
 }
