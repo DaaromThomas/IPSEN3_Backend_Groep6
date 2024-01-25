@@ -32,6 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
+#ignore sql
+create.sql
 
-# Ignore application properties
-application.properties
+#ignore env
+env
+

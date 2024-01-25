@@ -1,12 +1,12 @@
 package com.hsleiden.vdlelie.controllers;
 
 import com.hsleiden.vdlelie.dao.PackagingRepository;
-import com.hsleiden.vdlelie.model.Customer;
+import com.hsleiden.vdlelie.dto.PackageChangeRequest;
 import com.hsleiden.vdlelie.model.Packaging;
 import com.hsleiden.vdlelie.model.Stock;
-import com.hsleiden.vdlelie.services.EmailService;
 import com.hsleiden.vdlelie.services.PackagingService;
 import com.hsleiden.vdlelie.services.StockService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +47,7 @@ public class PackagingController
     @GetMapping("/packages")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public List<Packaging> getAllPackages(){
-        return packagingService.findAll();
+        return packagingService.findByIsDeletedFalse();
     }
 
     @GetMapping("/packages/name")
@@ -73,7 +73,8 @@ public class PackagingController
         if (packagingService.findById(id).isPresent())
         {
             Packaging _package =  packagingService.findById(id).get();
-            packagingService.delete(_package);
+            _package.setDeleted(true);
+            this.packagingService.save(_package);
         }
         else {
             return;
@@ -109,6 +110,10 @@ public class PackagingController
         }
 
         packagingService.save(packaging);
+    }
+    @PutMapping("/packages/update")
+    public void updatePackage(@RequestBody @Valid PackageChangeRequest packageChangeRequest){
+        this.packagingService.updatePackageDetails(packageChangeRequest);
     }
 
 
