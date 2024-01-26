@@ -49,7 +49,7 @@ public class ProductController
     //Returns 1 when successfully completed.
     //returns 0 when something went wrong :)
     @PostMapping("/product/ispacked")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public int changeIsPacked(@RequestBody ChangeIsPackedRequest changeIsPackedRequest){
         return productService.setIsPackedForProduct(changeIsPackedRequest.isPacked(), changeIsPackedRequest.getProductNumber());
     }
