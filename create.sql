@@ -1,4 +1,4 @@
-create table account (employeenumber integer not null, notification boolean, email varchar(255), id varchar(255) not null, location varchar(255), name varchar(255) unique, password varchar(255), role varchar(255) check (role in ('ROLE_ADMIN','ROLE_USER')), primary key (id));
+create table account (employeenumber integer not null, notification boolean, email varchar(255), id varchar(255) not null, location varchar(255), name varchar(255) unique, password varchar(255), role varchar(255), primary key (id));
 create table customer (customernumber integer not null, address varchar(255), email varchar(255), id varchar(255) not null, name varchar(255), phonenumber varchar(255), preferred_package varchar(255), primary key (id));
 create table location (address varchar(255), id varchar(255) not null, stock varchar(255) unique, primary key (id));
 create table log (dateoflog date, packagingamount integer not null, reverted boolean, timeoflog time(6), account varchar(255), id varchar(255) not null, packaging varchar(255) unique, product varchar(255) unique, primary key (id));
@@ -17,6 +17,6 @@ alter table if exists orders add constraint FKp1mlwxe5nhua51hv0fo39ywbw foreign 
 alter table if exists packaging add constraint FKntc32h6hkdxbu3yeu716q1b1w foreign key (stock) references stock;
 alter table if exists product add constraint FKs3p8ij095x4wm5k196t0523xe foreign key (order_) references orders;
 alter table if exists product add constraint FKixc4ja3e2avcm87xnayj1mstx foreign key (prefferedpackage) references packaging;
-alter table if exists refreshtoken add constraint FKdpxhtf6jerije637gslbr8ss0 foreign key (account_id) references account;create table account (employeenumber integer not null, notification boolean, email varchar(255), id varchar(255) not null, location varchar(255), name varchar(255) unique, password varchar(255), role varchar(255) check (role in ('ROLE_ADMIN','ROLE_USER')), primary key (id));
-INSERT INTO "stock" ("id", "stocknumber") VALUES ('0e0e1100-800b-431f-b7ae-0db01763ba1f', 1);
-INSERT INTO "location" ("id", "stock", "address") VALUES ('cdba1f68-f9e9-41c7-972e-0a12209763f4', '0e0e1100-800b-431f-b7ae-0db01763ba1f', 'Alphen aan den Rijn');
+alter table if exists refreshtoken add constraint FKdpxhtf6jerije637gslbr8ss0 foreign key (account_id) references account;
+INSERT INTO stock ("id", "stocknumber") VALUES ('0e0e1100-800b-431f-b7ae-0db01763ba1f', 1);
+INSERT INTO location ("id", "stock", "address") VALUES ('cdba1f68-f9e9-41c7-972e-0a12209763f4', '0e0e1100-800b-431f-b7ae-0db01763ba1f', 'Alphen aan den Rijn');
