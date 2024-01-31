@@ -39,6 +39,8 @@ public class SeedDataConfig implements CommandLineRunner {
                     .password(passwordEncoder.encode("admin"))
                     .role(Role.ROLE_ADMIN)
                     .location(location.get())
+                    .email("admin@voorbeeldemail.com")
+                    .notification(false)
                     .build();
             accountService.save(admin);
             log.debug("created admin account - {}", admin);
