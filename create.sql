@@ -338,3 +338,4 @@ alter table if exists packaging add constraint FKntc32h6hkdxbu3yeu716q1b1w forei
 alter table if exists product add constraint FKs3p8ij095x4wm5k196t0523xe foreign key (order_) references orders;
 alter table if exists product add constraint FKixc4ja3e2avcm87xnayj1mstx foreign key (prefferedpackage) references packaging;
 alter table if exists refreshtoken add constraint FKdpxhtf6jerije637gslbr8ss0 foreign key (account_id) references account;
+INSERT INTO "location" ("id", "stock", "address") VALUES ('cdba1f68-f9e9-41c7-972e-0a12209763f4', '0e0e1100-800b-431f-b7ae-0db01763ba1f', 'Alphen aan den Rijn');
